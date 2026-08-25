@@ -1,0 +1,33 @@
+{
+  "name": "@luizsiqueira/skills",
+  "version": "0.1.0",
+  "description": "Skills para agentes de IA (Claude Code) — fluxos de engenharia que uso com meus times, sem amarras a empresa ou ferramenta.",
+  "type": "module",
+  "bin": {
+    "skills": "./bin/cli.mjs"
+  },
+  "files": [
+    "bin",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "claude-code",
+    "skills",
+    "ai-agents",
+    "git-flow",
+    "engineering-leadership"
+  ],
+  "author": "Luiz Siqueira (https://luizsiqueira.com.br)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luizsiqueira-eng/skills.git"
+  },
+  "homepage": "https://luizsiqueira.com.br/#skills",
+  "bugs": "https://github.com/luizsiqueira-eng/skills/issues"
+}
