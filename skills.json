@@ -1,0 +1,21 @@
+{
+  "package": "@luizsiqueira/skills",
+  "repo": "https://github.com/luizsiqueira-eng/skills",
+  "skills": [
+    {
+      "name": "git-flow-delivery",
+      "title": "Git Flow Delivery — do card ao deploy",
+      "description": "Branch, commit, PR, release e hotfix seguindo o Git Flow, com integração opcional ao Jira.",
+      "tags": [
+        "git-flow",
+        "code-review",
+        "release",
+        "hotfix",
+        "jira"
+      ],
+      "added": "2026-08-25",
+      "featured": true,
+      "category": "Engenharia"
+    }
+  ]
+}

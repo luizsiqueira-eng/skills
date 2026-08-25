@@ -1,11 +1,11 @@
 ---
-name: fluxo-de-entrega
-description: "Fluxo de entrega do card ao deploy em projetos com git flow (develop/main): branch e commit com número do card e descrição em inglês, regra 1 branch = 1 commit, PR para develop só depois da validação humana, acompanhamento do code review, release develop → main sem squash com tag semver/rc, e hotfix a partir da main com PR dupla. Invocar sempre que for criar branch, commitar, abrir PR, gerar release ou hotfix."
+name: git-flow-delivery
+description: "Git Flow do card ao deploy em projetos com develop/main: branch e commit com número do card e descrição em inglês, regra 1 branch = 1 commit, PR para develop só depois da validação humana, acompanhamento do code review, release develop → main sem squash com tag semver/rc, hotfix a partir da main com PR dupla, e integração opcional com Jira via MCP. Invocar sempre que for criar branch, commitar, abrir PR, gerar release ou hotfix."
 ---
 
-# Fluxo de entrega — do card ao deploy
+# Git Flow Delivery — do card ao deploy
 
-Este é o fluxo que uso com meus times para levar um card do quadro até produção com
+Fluxo baseado no Git Flow, padrão de mercado, para levar um card do quadro até produção com
 rastreabilidade total: **todo commit, branch e PR carrega o número do card**, e o
 histórico do repositório conta a mesma história que o quadro de tarefas.
 
@@ -192,6 +192,30 @@ gh pr create --base develop --title "fix(ABC-123) - Description" --body "..."
   (para a correção não se perder na próxima release). Registrar **os dois links** no card.
 - Versão: patch com `rc` (`1.2.0 → 1.2.1-rc.1`), release final após o merge em `main`.
 
+
+## Integração com Jira (opcional, via MCP do Atlassian)
+
+Se o projeto tem o MCP do Atlassian conectado (ferramentas `jira_*`), as etapas de card da
+seção 4 podem ser feitas pelo agente. Sem MCP, faça-as manualmente ou via REST — nunca com
+credenciais no prompt.
+
+| Etapa | Ferramenta MCP | Observação |
+|---|---|---|
+| Ler o card (título, status, campos) | `jira_get_issue` | Confirme que o card existe antes de criar a branch |
+| Registrar o link do PR | `jira_update_issue` (campo de "PRs") **ou** `jira_add_comment` | O nome do campo varia por instância — veja "Adaptando ao seu time" |
+| Descobrir as transições disponíveis | `jira_get_transitions` | Os IDs mudam por workflow; nunca chumbe um número |
+| Mover para "Revisão de Código" | `jira_transition_issue` | Se a transição não estiver disponível, avise — não force outro caminho |
+
+Regras:
+
+- **Preencher campos antes de transicionar.** Alguns workflows rejeitam campos setados
+  dentro da transição ("not on the appropriate screen"): atualize o card primeiro, depois mova.
+- **Ler antes de escrever.** Sempre `jira_get_issue` antes de `jira_update_issue`, para não
+  sobrescrever conteúdo existente no campo de PRs — acrescente, não substitua.
+- **Marcar a origem.** Se o time usa uma label para o que o agente toca (ex.: `ai`), some-a
+  às labels existentes.
+- Hotfix registra **os dois** links de PR (`main` e `develop`) no mesmo card.
+
 ## Checklist rápido
 
 - [ ] Branch `tipo/ABC-123-english-name`, criada de `develop` (de `main` só se hotfix)
@@ -214,4 +238,6 @@ Troque estes pontos e o resto do fluxo se mantém:
 | Branch de integração / produção | `develop` / `main` | ex.: `dev` / `master` |
 | Status pós-PR | "Revisão de Código" | o nome da coluna no seu quadro |
 | Canal do time | Slack / Discord / Teams | webhook ou menção que o time usa |
+| Campo de PRs no Jira | campo de texto "PRs" ou comentário | o `customfield_*` da sua instância, ou comentário |
+| Label de origem | — | ex.: `ai`, `claude`, se o time quiser rastrear |
 | Tipos de commit | feat, fix, chore, refactor, docs, test | acrescente `perf`, `ci`… se usar |

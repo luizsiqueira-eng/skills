@@ -1,6 +1,6 @@
 # Skills para agentes de IA
 
-Fluxos de engenharia que uso com meus times, empacotados como **skills do Claude Code**
+Fluxos de engenharia baseados em práticas de mercado (Git Flow, code review, releases), empacotados como **skills do Claude Code**
 — públicas, neutras de empresa e prontas para adaptar ao seu contexto.
 
 Uma skill é uma pasta com um `SKILL.md`: instruções que o agente carrega quando a tarefa
@@ -13,10 +13,10 @@ casa com a descrição. Instalar é copiar a pasta para `.claude/skills/` do seu
 npx @luizsiqueira/skills list
 
 # instalar uma skill no projeto atual (./.claude/skills/<skill>)
-npx @luizsiqueira/skills add fluxo-de-entrega
+npx @luizsiqueira/skills add git-flow-delivery
 
 # instalar para todos os seus projetos (~/.claude/skills/<skill>)
-npx @luizsiqueira/skills add fluxo-de-entrega --global
+npx @luizsiqueira/skills add git-flow-delivery --global
 ```
 
 Sem npm? Copie a pasta `skills/<skill>` para `.claude/skills/` — é só isso.
@@ -25,7 +25,7 @@ Sem npm? Copie a pasta `skills/<skill>` para `.claude/skills/` — é só isso.
 
 | Skill | O que faz |
 |---|---|
-| [`fluxo-de-entrega`](skills/fluxo-de-entrega/SKILL.md) | Do card ao deploy: branch e commit com número do card e descrição em inglês (1 branch = 1 commit), PR para `develop` só após validação humana, acompanhamento do code review, release `develop → main` sem squash com tag semver/rc, hotfix a partir da `main` com PR dupla. |
+| [`git-flow-delivery`](skills/git-flow-delivery/SKILL.md) | Git Flow do card ao deploy: branch e commit com número do card (1 branch = 1 commit), PR para `develop` só após validação humana, code review, release `develop → main` sem squash com tag semver/rc, hotfix com PR dupla. Integração opcional com Jira via MCP. |
 
 ## Adaptando
 
@@ -36,7 +36,7 @@ Troque esses e o resto do fluxo se mantém.
 ## Contribuindo
 
 Abra uma issue com o caso que a skill não cobre, ou um PR seguindo — claro — o
-`fluxo-de-entrega`.
+`git-flow-delivery`.
 
 ## Licença
 
