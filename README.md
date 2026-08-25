@@ -38,6 +38,18 @@ Troque esses e o resto do fluxo se mantém.
 Abra uma issue com o caso que a skill não cobre, ou um PR seguindo — claro — o
 `git-flow-delivery`.
 
+## Publicação
+
+Cada release no GitHub publica automaticamente no npm (`.github/workflows/publish.yml`,
+via Trusted Publishing — sem tokens). Para lançar uma versão:
+
+```bash
+git tag v0.2.0 && git push --tags
+gh release create v0.2.0 --generate-notes
+```
+
+A versão do `package.json` é alinhada com a tag durante o workflow.
+
 ## Licença
 
 MIT — [Luiz Siqueira](https://luizsiqueira.com.br)

@@ -1,0 +1,41 @@
+# Publica no npm quando uma release vX.Y.Z é publicada no GitHub.
+# Autenticação por Trusted Publishing (OIDC): sem token, sem 2FA manual.
+# Pré-requisito (uma vez): npmjs.com → pacote → Settings → Trusted Publisher → GitHub Actions
+#   repository: luizsiqueira-eng/skills · workflow: publish.yml
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write   # necessário para o OIDC do npm
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Alinhar versão do package.json com a tag da release
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          CURRENT="$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "$CURRENT" ]; then
+            echo "package.json está em $CURRENT; usando a versão da tag: $TAG"
+            npm pkg set version="$TAG"
+          fi
+
+      - name: Sanidade do CLI
+        run: |
+          node bin/cli.mjs list
+          test -f "skills/$(node bin/cli.mjs list | head -1)/SKILL.md"
+
+      - name: Publicar
+        run: npm publish --access public --provenance

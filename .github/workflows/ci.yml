@@ -1,0 +1,36 @@
+# Valida o pacote em todo PR e push: CLI funciona, catálogo bate com as pastas.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: CLI lista e instala
+        run: |
+          node bin/cli.mjs list
+          cd "$(mktemp -d)" && node "$GITHUB_WORKSPACE/bin/cli.mjs" add --all && ls .claude/skills
+
+      - name: Catálogo (skills.json) bate com as pastas em skills/
+        run: |
+          node -e '
+            const fs = require("fs");
+            const cat = JSON.parse(fs.readFileSync("skills.json", "utf8")).skills.map(s => s.name).sort();
+            const dirs = fs.readdirSync("skills", { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name).sort();
+            const miss = dirs.filter(d => !cat.includes(d)), extra = cat.filter(c => !dirs.includes(c));
+            if (miss.length || extra.length) { console.error({ semCatalogo: miss, semPasta: extra }); process.exit(1); }
+            for (const d of dirs) if (!fs.existsSync(`skills/${d}/SKILL.md`)) { console.error(`falta SKILL.md em ${d}`); process.exit(1); }
+            console.log("ok:", dirs);
+          '
+
+      - name: Pacote (dry-run)
+        run: npm pack --dry-run
