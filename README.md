@@ -44,8 +44,8 @@ Cada release no GitHub publica automaticamente no npm (`.github/workflows/publis
 via Trusted Publishing — sem tokens). Para lançar uma versão:
 
 ```bash
-git tag v0.2.0 && git push --tags
-gh release create v0.2.0 --generate-notes
+git tag v1.0.0 && git push --tags
+gh release create v1.0.0 --generate-notes
 ```
 
 A versão do `package.json` é alinhada com a tag durante o workflow.

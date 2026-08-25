@@ -23,6 +23,9 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
 
+      - name: npm >= 11.5 (necessário para Trusted Publishing/OIDC)
+        run: npm install -g npm@latest && npm -v
+
       - name: Alinhar versão do package.json com a tag da release
         run: |
           TAG="${GITHUB_REF_NAME#v}"
