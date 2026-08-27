@@ -34,13 +34,12 @@
     },
     {
       "name": "security-review",
-      "title": "Security Review — Laravel, Node e apps com IA",
+      "title": "Web Security Review",
       "description": "Detecta a stack, roda os scanners disponíveis, procura padrões perigosos (injection, XSS, IDOR, secrets, SSRF, output de LLM sem validação), classifica por severidade e corrige com confirmação.",
       "tags": [
+        "web",
         "seguranca",
         "owasp",
-        "laravel",
-        "node",
         "llm"
       ],
       "category": "Segurança",
