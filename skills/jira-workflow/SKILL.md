@@ -220,6 +220,28 @@ Rubrica em **esforço humano**, não em tokens ou volume mecânico:
 
 Mover 200 arquivos é PP se for mecânico. O que conta é dificuldade, risco e tempo para uma pessoa.
 
+## Integração com o fluxo de entrega (`git-flow-delivery`)
+
+Se as duas skills estiverem instaladas, a divisão é esta — e o `.claude/jira-workflow.md` é a
+fonte da verdade para as duas:
+
+| Quem | Cuida de |
+|---|---|
+| `jira-workflow` (esta) | board, colunas, campos, transições, criação e consulta de cards |
+| `git-flow-delivery` | branch, commit, PR, code review, release e hotfix |
+
+Pontos de contato, na ordem em que acontecem:
+
+| Momento no código | O que acontece no card |
+|---|---|
+| Branch criada, começou a codar | move para o status de **desenvolvimento** (campos daquele momento preenchidos antes) |
+| PR aberto | registra o link do PR no campo mapeado **e** move para **code review** |
+| PR aprovado e mergeado | move conforme o mapa (em geral **qualidade**) |
+| Release publicada | PR de release não tem card — nenhuma etapa de tracker se aplica |
+
+Sem a `git-flow-delivery` instalada, esses movimentos continuam valendo: quem avisa é a pessoa
+("abri o PR"), e você move o card do mesmo jeito.
+
 ## Regras de ouro
 
 - **Sem card, não começa o código.** Se perceber que está codando sem card: pare, crie e mova

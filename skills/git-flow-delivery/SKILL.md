@@ -12,6 +12,13 @@ histórico do repositório conta a mesma história que o quadro de tarefas.
 Ferramenta-agnóstico: funciona com Jira, Linear, GitHub Issues, Azure Boards etc.
 Onde aparecer `ABC-123`, leia "o identificador do card no seu tracker".
 
+> **Se existir `.claude/jira-workflow.md`** (criado pela skill `jira-workflow`), ele é a
+> **fonte da verdade** para nomes de status, ids de campo e o momento de preencher cada um:
+> leia esse arquivo e use o que está lá em vez de perguntar de novo ou supor nomes. As duas
+> skills se dividem assim — `jira-workflow` cuida do board e dos campos; esta cuida de
+> branch, commit, PR, release e hotfix; e o card acompanha o trabalho nos dois pontos de
+> contato abaixo.
+
 ## Mapa de ambientes
 
 | Branch | Ambiente | Quem mergeia |
@@ -30,6 +37,11 @@ tipo/ABC-123-short-description-in-english
 - `tipo` ∈ `feat` · `fix` · `chore` · `refactor` · `docs` · `test`
 - Criada a partir de `develop` atualizada: `git checkout develop && git pull && git checkout -b feat/ABC-123-...`
 - Nome **em inglês**, kebab-case, curto. O card já tem o título completo em português.
+
+**Ao criar a branch, mova o card para o status de desenvolvimento** — o status do card sempre
+reflete a etapa real do trabalho. Preencha antes os campos daquele momento (ex.: assignee,
+estimativa, data de entrega) e só então transicione; ver a seção de integração com Jira.
+Card parado atrás da realidade é erro, não detalhe.
 
 ## 2. Commit
 
@@ -202,6 +214,7 @@ credenciais no prompt.
 | Etapa | Ferramenta MCP | Observação |
 |---|---|---|
 | Ler o card (título, status, campos) | `jira_get_issue` | Confirme que o card existe antes de criar a branch |
+| Mover para **desenvolvimento** ao criar a branch | `jira_update_issue` (campos do momento) + `jira_transition_issue` | O card entra em dev quando o trabalho começa, não quando termina |
 | Registrar o link do PR | `jira_update_issue` (campo de "PRs") **ou** `jira_add_comment` | O nome do campo varia por instância — veja "Adaptando ao seu time" |
 | Descobrir as transições disponíveis | `jira_get_transitions` | Os IDs mudam por workflow; nunca chumbe um número |
 | Mover para "Revisão de Código" | `jira_transition_issue` | Se a transição não estiver disponível, avise — não force outro caminho |
@@ -220,6 +233,7 @@ Regras:
 
 - [ ] Branch `tipo/ABC-123-english-name`, criada de `develop` (de `main` só se hotfix)
 - [ ] Commit `tipo(ABC-123) - Description in English` — e **só um** commit
+- [ ] Card movido para desenvolvimento ao criar a branch
 - [ ] Humano validou **antes** do PR
 - [ ] PR para `develop`, título = commit, body em português com link do card
 - [ ] Link do PR registrado no card; card em "Revisão de Código"
@@ -239,5 +253,6 @@ Troque estes pontos e o resto do fluxo se mantém:
 | Status pós-PR | "Revisão de Código" | o nome da coluna no seu quadro |
 | Canal do time | Slack / Discord / Teams | webhook ou menção que o time usa |
 | Campo de PRs no Jira | campo de texto "PRs" ou comentário | o `customfield_*` da sua instância, ou comentário |
+| Mapa do board e dos campos | perguntar ao time | `.claude/jira-workflow.md` (skill `jira-workflow`) |
 | Label de origem | — | ex.: `ai`, `claude`, se o time quiser rastrear |
 | Tipos de commit | feat, fix, chore, refactor, docs, test | acrescente `perf`, `ci`… se usar |
