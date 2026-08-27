@@ -26,6 +26,7 @@ Sem npm? Copie a pasta `skills/<skill>` para `.claude/skills/` — é só isso.
 | Skill | O que faz |
 |---|---|
 | [`git-flow-delivery`](skills/git-flow-delivery/SKILL.md) | Git Flow do card ao deploy: branch e commit com número do card (1 branch = 1 commit), PR para `develop` só após validação humana, code review, release `develop → main` sem squash com tag semver/rc, hotfix com PR dupla. Integração opcional com Jira via MCP. |
+| [`jira-workflow`](skills/jira-workflow/SKILL.md) | Configura e opera o fluxo no Jira do seu time: entrevista na primeira execução para mapear board, colunas, tipos de issue e campos customizados (e o momento de preencher cada um), grava em `.claude/jira-workflow.md` e depois cria, refina, move e consulta cards. Sugere um quadro padrão para quem ainda não tem fluxo. |
 
 ## Adaptando
 

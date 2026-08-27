@@ -16,6 +16,21 @@
       "added": "2026-08-25",
       "featured": true,
       "category": "Engenharia"
+    },
+    {
+      "name": "jira-workflow",
+      "title": "Jira Workflow — configura e opera o seu fluxo",
+      "description": "Entrevista o time na primeira vez para mapear board, colunas, campos e o momento de cada um; depois cria, move e consulta cards seguindo esse mapa.",
+      "tags": [
+        "jira",
+        "workflow",
+        "board",
+        "code-review",
+        "qualidade"
+      ],
+      "category": "Processo",
+      "added": "2026-08-27",
+      "featured": false
     }
   ]
 }
