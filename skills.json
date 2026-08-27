@@ -18,14 +18,14 @@
       "category": "Engenharia"
     },
     {
-      "name": "jira-workflow",
-      "title": "Jira Workflow — configura e opera o seu fluxo",
-      "description": "Entrevista o time na primeira vez para mapear board, colunas, campos e o momento de cada um; depois cria, move e consulta cards seguindo esse mapa.",
+      "name": "board-workflow",
+      "title": "Board Workflow — Jira, Trello e outros",
+      "description": "Entrevista o time na primeira vez para mapear quadro, colunas, campos e o momento de cada um; depois cria, move e consulta cards seguindo esse mapa.",
       "tags": [
         "jira",
+        "trello",
         "workflow",
         "board",
-        "code-review",
         "qualidade"
       ],
       "category": "Processo",

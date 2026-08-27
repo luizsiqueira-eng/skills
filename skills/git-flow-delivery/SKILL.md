@@ -1,6 +1,6 @@
 ---
 name: git-flow-delivery
-description: "Git Flow do card ao deploy em projetos com develop/main: branch e commit com número do card e descrição em inglês, regra 1 branch = 1 commit, PR para develop só depois da validação humana, acompanhamento do code review, release develop → main sem squash com tag semver/rc, hotfix a partir da main com PR dupla, e integração opcional com Jira via MCP. Invocar sempre que for criar branch, commitar, abrir PR, gerar release ou hotfix."
+description: "Git Flow do card ao deploy em projetos com develop/main: branch e commit com número do card e descrição em inglês, regra 1 branch = 1 commit, PR para develop só depois da validação humana, acompanhamento do code review, release develop → main sem squash com tag semver/rc, hotfix a partir da main com PR dupla, e integração opcional com o board (Jira ou Trello). Invocar sempre que for criar branch, commitar, abrir PR, gerar release ou hotfix."
 ---
 
 # Git Flow Delivery — do card ao deploy
@@ -12,10 +12,10 @@ histórico do repositório conta a mesma história que o quadro de tarefas.
 Ferramenta-agnóstico: funciona com Jira, Linear, GitHub Issues, Azure Boards etc.
 Onde aparecer `ABC-123`, leia "o identificador do card no seu tracker".
 
-> **Se existir `.claude/jira-workflow.md`** (criado pela skill `jira-workflow`), ele é a
+> **Se existir `.claude/board-workflow.md`** (criado pela skill `board-workflow`), ele é a
 > **fonte da verdade** para nomes de status, ids de campo e o momento de preencher cada um:
 > leia esse arquivo e use o que está lá em vez de perguntar de novo ou supor nomes. As duas
-> skills se dividem assim — `jira-workflow` cuida do board e dos campos; esta cuida de
+> skills se dividem assim — `board-workflow` cuida do board e dos campos; esta cuida de
 > branch, commit, PR, release e hotfix; e o card acompanha o trabalho nos dois pontos de
 > contato abaixo.
 
@@ -205,28 +205,30 @@ gh pr create --base develop --title "fix(ABC-123) - Description" --body "..."
 - Versão: patch com `rc` (`1.2.0 → 1.2.1-rc.1`), release final após o merge em `main`.
 
 
-## Integração com Jira (opcional, via MCP do Atlassian)
+## Integração com o board (Jira ou Trello, opcional)
 
-Se o projeto tem o MCP do Atlassian conectado (ferramentas `jira_*`), as etapas de card da
-seção 4 podem ser feitas pelo agente. Sem MCP, faça-as manualmente ou via REST — nunca com
-credenciais no prompt.
+Se o projeto tem o board acessível (MCP do Atlassian para Jira, MCP ou API do Trello), as etapas
+de card das seções 1 e 4 podem ser feitas pelo agente. Sem acesso, faça-as manualmente — nunca
+com credenciais no prompt.
 
-| Etapa | Ferramenta MCP | Observação |
+| Etapa | Jira | Trello |
 |---|---|---|
-| Ler o card (título, status, campos) | `jira_get_issue` | Confirme que o card existe antes de criar a branch |
-| Mover para **desenvolvimento** ao criar a branch | `jira_update_issue` (campos do momento) + `jira_transition_issue` | O card entra em dev quando o trabalho começa, não quando termina |
-| Registrar o link do PR | `jira_update_issue` (campo de "PRs") **ou** `jira_add_comment` | O nome do campo varia por instância — veja "Adaptando ao seu time" |
-| Descobrir as transições disponíveis | `jira_get_transitions` | Os IDs mudam por workflow; nunca chumbe um número |
-| Mover para "Revisão de Código" | `jira_transition_issue` | Se a transição não estiver disponível, avise — não force outro caminho |
+| Ler o card antes de criar a branch | `jira_get_issue` | buscar o card no quadro pelo id/nome |
+| **Mover para desenvolvimento** ao criar a branch | preencher campos + `jira_transition_issue` | trocar `idList` para a lista de desenvolvimento |
+| Registrar o link do PR | `jira_update_issue` no campo de PRs **ou** `jira_add_comment` | custom field de PR, comentário, ou anexar o link no card |
+| **Mover para code review** ao abrir o PR | `jira_get_transitions` → `jira_transition_issue` | trocar `idList` para a lista de code review |
 
-Regras:
+Regras que valem nos dois:
 
-- **Preencher campos antes de transicionar.** Alguns workflows rejeitam campos setados
-  dentro da transição ("not on the appropriate screen"): atualize o card primeiro, depois mova.
-- **Ler antes de escrever.** Sempre `jira_get_issue` antes de `jira_update_issue`, para não
-  sobrescrever conteúdo existente no campo de PRs — acrescente, não substitua.
-- **Marcar a origem.** Se o time usa uma label para o que o agente toca (ex.: `ai`), some-a
-  às labels existentes.
+- **Ler antes de escrever.** Busque o card antes de atualizar, para **acrescentar** ao campo de
+  PRs em vez de sobrescrever o que já está lá.
+- **Campos do momento antes de mover.** No Jira é técnico: muitos workflows recusam campo setado
+  dentro da transição (*"not on the appropriate screen"*) — atualize, depois transicione. No
+  Trello nada impede a movimentação, então a checagem é sua: confira os campos antes de trocar a
+  lista.
+- **Nunca chumbe identificador.** No Jira, descubra a transição com `jira_get_transitions`; no
+  Trello, use o **id** da lista (nome muda e quebra silenciosamente).
+- **Marcar a origem.** Se o time usa uma label para o que o agente toca, some-a às existentes.
 - Hotfix registra **os dois** links de PR (`main` e `develop`) no mesmo card.
 
 ## Checklist rápido
@@ -252,7 +254,7 @@ Troque estes pontos e o resto do fluxo se mantém:
 | Branch de integração / produção | `develop` / `main` | ex.: `dev` / `master` |
 | Status pós-PR | "Revisão de Código" | o nome da coluna no seu quadro |
 | Canal do time | Slack / Discord / Teams | webhook ou menção que o time usa |
-| Campo de PRs no Jira | campo de texto "PRs" ou comentário | o `customfield_*` da sua instância, ou comentário |
-| Mapa do board e dos campos | perguntar ao time | `.claude/jira-workflow.md` (skill `jira-workflow`) |
+| Onde registrar o PR | campo "PRs" ou comentário | Jira: `customfield_*` · Trello: custom field, comentário ou anexo |
+| Mapa do board e dos campos | perguntar ao time | `.claude/board-workflow.md` (skill `board-workflow`) |
 | Label de origem | — | ex.: `ai`, `claude`, se o time quiser rastrear |
 | Tipos de commit | feat, fix, chore, refactor, docs, test | acrescente `perf`, `ci`… se usar |
