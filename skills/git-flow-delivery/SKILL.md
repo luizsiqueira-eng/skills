@@ -1,6 +1,6 @@
 ---
 name: git-flow-delivery
-description: "Git Flow do card ao deploy em projetos com develop/main: branch e commit com número do card e descrição em inglês, regra 1 branch = 1 commit, PR para develop só depois da validação humana, acompanhamento do code review, release develop → main sem squash com tag semver/rc, hotfix a partir da main com PR dupla, e integração opcional com o board (Jira ou Trello). Invocar sempre que for criar branch, commitar, abrir PR, gerar release ou hotfix."
+description: "Git Flow do card ao deploy em projetos com develop/main: branch e commit com número do card e descrição em inglês, regra 1 branch = 1 commit, PR para develop só depois da validação humana, acompanhamento do code review com checklist do que revisar, release develop → main sem squash com tag semver/rc, hotfix a partir da main com PR dupla, e integração opcional com o board (Jira ou Trello). Invocar sempre que for criar branch, commitar, abrir PR, gerar release ou hotfix."
 ---
 
 # Git Flow Delivery — do card ao deploy
@@ -105,7 +105,8 @@ Regras que não se negociam:
 
 2. **Mover o card para "Revisão de Código"** (ou o status equivalente do seu quadro).
 
-3. **Acompanhar o code review** (bot e/ou humanos). Se o repo tem review automático,
+3. **Acompanhar o code review** (bot e/ou humanos) — o que olhar está na seção
+   *Code review: o que olhar*, adiante. Se o repo tem review automático,
    aguardar **no máximo 1 minuto** — nunca em loop além disso. Para cada thread aberto:
 
    | Comentário | Ação |
@@ -142,6 +143,51 @@ Regras que não se negociam:
    PR: <url do PR>
    Card: <url do card>
    ```
+
+## Code review: o que olhar
+
+Vale para revisar o PR de outra pessoa **e** para conferir o seu antes de pedir revisão.
+
+### 1. Formato do título e dos commits
+
+- Padrão `tipo(ABC-123) - Description in English`, igual no commit e no título do PR.
+- **Identificador do card presente.** O formato é o do tracker do time: `ABC-123` (Jira,
+  Linear), `#1234` (GitHub Issues) ou o que estiver no mapa do board. Sem id, o histórico
+  perde a rastreabilidade — é apontamento bloqueante.
+- Tipo válido: `feat` · `fix` · `chore` · `refactor` · `docs` · `test`.
+- Um commit por branch (`git log --oneline develop..HEAD`).
+
+### 2. Estrutura do PR
+
+- A descrição explica **o que** foi feito e **por quê**, com link do card.
+- Labels aplicadas, quando o repo usa (ex.: `Bug fixes`, `Improvements`, `Breaking Changes`).
+- **É hotfix?** Então existem **dois** PRs: um para `main` e um para `develop`.
+- **É release?** Então **sem squash/rebase** no merge — o histórico da `develop` se preserva.
+- O card está na coluna que corresponde à etapa real (code review).
+
+### 3. Qualidade do código
+
+| Frente | O que perguntar ao diff |
+|---|---|
+| **Corretude** | A lógica faz o que o card pede? Há edge case não tratado (lista vazia, nulo, limite, concorrência)? |
+| **Idempotência** | Operações críticas (cobrança, envio, escrita externa) podem rodar duas vezes sem duplicar efeito? Retry é seguro? |
+| **Segurança** | SQL/command injection; segredo ou token no código; dado pessoal em log ou resposta sem mascaramento; permissão verificada onde importa. |
+| **Tratamento de erros** | Falha é capturada, logada e propagada com um **id de correlação** que permita rastrear a operação ponta a ponta? Nada de `catch` silencioso. |
+| **Clareza** | Nomes de variáveis, funções e classes dizem o que são? Precisa de comentário para entender o óbvio? |
+| **Duplicação** | Código repetido que já existe no projeto e poderia ser reaproveitado? |
+| **Testes** | Existe teste para o que mudou, cobrindo o caso crítico **e** o de erro — não só o caminho feliz? |
+| **Escopo** | O diff faz só o que o card pede? Mudança carona atrapalha a revisão e o rollback. |
+
+### 4. Severidade — sempre classifique o comentário
+
+| Nível | Quando | Efeito |
+|---|---|---|
+| 🔴 **Bloqueante** | Erro que compromete a entrega, dados ou segurança | pedir alteração; não aprovar |
+| 🟡 **Sugestão** | Melhoria relevante, não impeditiva | quem escreveu decide |
+| 🔵 **Nitpick** | Estilo, nomenclatura, preferência | não bloqueia; agrupe num comentário só |
+
+Sem severidade, todo comentário parece bloqueante e a revisão trava. Ao aprovar com apenas
+sugestões e nitpicks, deixe explícito que estão liberados para seguir.
 
 ## 5. Release — develop → main
 
@@ -240,6 +286,7 @@ Regras que valem nos dois:
 - [ ] PR para `develop`, título = commit, body em português com link do card
 - [ ] Link do PR registrado no card; card em "Revisão de Código"
 - [ ] Threads de review: respondidos **e** resolvidos; correções via amend
+- [ ] Revisão passou pelas 4 frentes (formato, estrutura, qualidade, severidade)
 - [ ] Notificação ao time só depois de perguntar e receber "sim"
 - [ ] Release: título `Release`, sem squash, tag `vX.Y.Z`
 - [ ] Hotfix: PR para `main` **e** para `develop`, versão patch
