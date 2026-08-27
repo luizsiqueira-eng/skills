@@ -101,18 +101,59 @@ usuário e se existe validação/escape antes. Só reporte o que confirmou.
 - CORS `*` com credenciais; cookies sem `HttpOnly`/`Secure`/`SameSite`.
 - Redirect com destino vindo da query (`redirect($request->url)`) sem allowlist.
 
-### Autenticação e sessão
+### Inclusão de arquivos (LFI / RFI)
 
-- JWT sem expiração, sem verificação de assinatura (`algorithms: none`), segredo fraco/hardcoded.
-- Sem rate limit em login/reset/OTP; sem bloqueio após tentativas.
+- `include`/`require`/`include_once` com caminho vindo de entrada (`include($_GET['page'])`,
+  `require "pages/$name.php"`) → LFI; com `allow_url_include=On`, vira RFI (código remoto).
+- Node: `require(userInput)`, `import(userInput)`, `res.render(req.query.view)`; Python:
+  `__import__(name)`, `importlib.import_module(user)`, `open(path)` com caminho externo.
+- Seguro: **allowlist** de nomes válidos (`['home','about']`), nunca o caminho; `allow_url_include=Off`.
+
+### CSRF e clickjacking
+
+| Padrão suspeito | Seguro |
+|---|---|
+| Laravel: rota em `web.php` fora do middleware `web`, ou `$except` no `VerifyCsrfToken` com rotas de estado | manter `@csrf` nos forms e o middleware ativo; exceções só para webhooks com assinatura própria |
+| Node: `POST/PUT/DELETE` com sessão por cookie e sem token CSRF (`csurf`/`csrf-csrf`/double-submit) | token por sessão ou `SameSite=Lax/Strict` **e** checagem de `Origin` |
+| Django: `@csrf_exempt` em view que muda estado; `CsrfViewMiddleware` removido | manter o middleware; exemption só com justificativa |
+| Estado mudado via `GET` (`/delete?id=`) | mutação só em `POST/PUT/DELETE` |
+| Sem `X-Frame-Options` nem `Content-Security-Policy: frame-ancestors` | `frame-ancestors 'self'` (ou `'none'`) — clickjacking; `helmet` no Node, `SecurityHeaders`/middleware no Laravel |
+| Sem `Strict-Transport-Security`, `X-Content-Type-Options: nosniff`, `Referrer-Policy` | headers de segurança no servidor ou no middleware |
+
+### Autenticação, sessão e bypass
+
+- **Bypass:** rota que muda estado sem middleware de auth; auth checada só no front; `if (user)`
+  onde `user` pode vir do cliente (header/cookie forjável, `X-User-Id`); endpoint de debug/admin
+  esquecido (`/debug`, `/admin` sem guard); ordem errada de middleware (handler antes do auth).
+- **JWT:** sem expiração; sem verificar assinatura (`alg: none`, `verify: false`, `decode()` em vez de
+  `verify()`); segredo fraco/hardcoded; aceitar token de outro emissor/audience; sem revogação.
+- **Brute force:** sem rate limit em login/reset/OTP/2FA; sem bloqueio ou atraso progressivo após
+  tentativas; enumeração de usuário por mensagem diferente ("senha errada" vs "usuário não existe").
+- **Session fixation:** id de sessão não regenerado no login (`session()->regenerate()`,
+  `req.session.regenerate()`, `request.session.cycle_key()`); id aceito pela URL ou por cookie
+  pré-existente.
+- **Session hijacking:** cookie sem `HttpOnly`/`Secure`/`SameSite`; sessão sem expiração ou sem
+  invalidação no logout e na troca de senha; token de sessão em URL, log ou `localStorage` exposto a XSS.
 - Comparação de token/hash com `==` em vez de comparação em tempo constante.
 - Senha com hash fraco (MD5/SHA1) ou sem salt; `bcrypt`/`argon2` é o esperado.
 
-### Tratamento de erros e logs
+### Condições de corrida (race condition)
+
+- Padrão **ler → decidir → gravar** sem lock ou transação em recurso disputado: saldo, estoque,
+  cupom de uso único, "já votou?", limite de uso — permite gastar/usar duas vezes com requisições
+  simultâneas.
+- Seguro: `SELECT ... FOR UPDATE` / `lockForUpdate()` dentro de transação; `UPDATE ... WHERE saldo >= ?`
+  atômico; constraint `UNIQUE` para "uma vez só"; chave de idempotência em operações de pagamento.
+- Teste negativo: disparar N requisições em paralelo e conferir que só uma passa.
+
+### Exposição de dados sensíveis, erros e logs
 
 - Stack trace, query ou payload retornados ao cliente (`APP_DEBUG=true` em produção,
   `app.use(errorHandler)` que vaza `err.stack`).
-- Dado pessoal, token ou senha em log.
+- Dado pessoal, token ou senha em log, em URL (`?token=`) ou em resposta de API além do necessário
+  (serializar o model inteiro: `return $user`, `res.json(user)` com hash/e-mail/documento).
+- Tráfego sem TLS; `.git/`, `.env`, backups ou `phpinfo` servidos publicamente; listagem de diretório.
+- Dado sensível armazenado em claro quando deveria ser hash ou cifrado; sem mascaramento em telas/logs.
 
 ## 4. Dependências e supply chain
 
@@ -196,11 +237,32 @@ os quatro, não é achado — é palpite.
 - Se o projeto usa a skill `git-flow-delivery`, a correção segue o fluxo dela (branch, commit
   com o card, PR). Secret exposto e 🔴 explorável em produção são **hotfix**.
 
+## Mapa de cobertura (Pentest Web)
+
+Para conferir que a revisão não deixou buraco — cada item e onde ele é tratado neste arquivo:
+
+| Vulnerabilidade | Seção |
+|---|---|
+| SQL Injection | Injection |
+| Cross-Site Scripting (XSS) | XSS e saída para o navegador |
+| Cross-Site Request Forgery (CSRF) | CSRF e clickjacking |
+| Broken Access Control · IDOR | Autorização, IDOR e acesso |
+| Authentication Bypass · Brute Force · JWT Misconfiguration | Autenticação, sessão e bypass |
+| Session Fixation · Session Hijacking | Autenticação, sessão e bypass |
+| CORS Misconfiguration · Open Redirect | Upload, arquivos e rede |
+| Sensitive Data Exposure | Exposição de dados sensíveis, erros e logs |
+| SSRF · Path Traversal | Upload, arquivos e rede |
+| Local / Remote File Inclusion | Inclusão de arquivos (LFI / RFI) |
+| File Upload · Unrestricted File Upload | Upload, arquivos e rede |
+| Clickjacking | CSRF e clickjacking |
+| Race Condition | Condições de corrida |
+| Prompt Injection · Excessive Agency · Insecure Output · RAG | Se o projeto usa LLM, RAG ou agentes |
+
 ## Checklist rápido
 
 - [ ] Stack detectada; sinais de LLM verificados
 - [ ] `audit` de dependências rodado; secrets procurados (código **e** histórico)
-- [ ] Padrões de injection, XSS, IDOR, upload/SSRF, auth e logs revisados — matches **confirmados**
+- [ ] Todas as linhas do **mapa de cobertura** revisadas — matches **confirmados**
 - [ ] Se há LLM: output handling, prompt injection, agency, RAG e logs checados
 - [ ] Cada achado com arquivo:linha, exploração e correção; severidade atribuída
 - [ ] Relatório entregue **antes** de qualquer alteração
