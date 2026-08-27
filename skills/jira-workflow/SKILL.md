@@ -1,6 +1,6 @@
 ---
 name: jira-workflow
-description: "Configura e opera o fluxo de trabalho no Jira de qualquer time: na primeira execução entrevista a pessoa para mapear projeto, board, colunas/status, tipos de issue, campos customizados e em que momento cada campo é preenchido, e grava o mapa em .claude/jira-workflow.md; depois usa esse mapa para criar, refinar, mover, comentar e consultar cards via MCP do Atlassian. Para quem ainda não tem fluxo definido, sugere um quadro padrão (Backlog → Refinamento → Desenvolvimento → Code Review → Qualidade → Validação → Pronto). Invocar quando pedirem para configurar o Jira, criar/mover/atualizar/comentar card, ver o que está em cada coluna do board, ou quando não souberem qual fluxo adotar."
+description: "Configura e opera o fluxo de trabalho no Jira de qualquer time: na primeira execução entrevista a pessoa para mapear projeto, board, colunas/status, tipos de issue, campos customizados e em que momento cada campo é preenchido, e grava o mapa em .claude/jira-workflow.md; depois usa esse mapa para criar, refinar, mover, comentar e consultar cards via MCP do Atlassian. Para quem ainda não tem fluxo definido, sugere um quadro padrão (Aguardando → Em Desenvolvimento → Code Review → Qualidade → Validação → Pronto). Invocar quando pedirem para configurar o Jira, criar/mover/atualizar/comentar card, ver o que está em cada coluna do board, ou quando não souberem qual fluxo adotar."
 ---
 
 # Fluxo de trabalho no Jira
@@ -93,7 +93,7 @@ o mesmo mapa). Formato:
 - Projeto: <CHAVE> · Board: <nome> (id <n>) · Site: <sua-instancia>.atlassian.net
 
 ## Fluxo (status reais, em ordem)
-Backlog → Refinamento → Desenvolvimento → Code Review → Qualidade → Validação → Pronto
+Aguardando → Em Desenvolvimento → Code Review → Qualidade → Validação → Pronto
 
 | Etapa | Status no Jira | Entra quando | Sai quando | Quem age |
 |---|---|---|---|---|
@@ -119,26 +119,29 @@ Atualize o arquivo — ele é a fonte da verdade, não a memória da conversa.
 
 # Quadro padrão sugerido (para quem não tem fluxo)
 
-Sete colunas, do backlog ao pronto. Cada uma com critério claro de entrada e saída — coluna
-sem critério vira estacionamento de card.
+Seis colunas, do que está esperando ao que está pronto. Cada uma com critério claro de
+entrada e saída — coluna sem critério vira estacionamento de card.
 
 | # | Coluna | Significa | Sai quando |
 |---|---|---|---|
-| 1 | **Backlog** | Demanda registrada, ainda não priorizada | Foi priorizada e alguém vai refinar |
-| 2 | **Refinamento** | Entendendo o problema: critério de aceitação, solução técnica, estimativa | Está claro o suficiente para alguém começar sem perguntar |
-| 3 | **Desenvolvimento** | Alguém está codando (assignee definido) | Código pronto, testado localmente, PR aberto |
-| 4 | **Code Review** | PR aberto aguardando revisão | PR aprovado e mergeado |
-| 5 | **Qualidade** | QA validando em ambiente de teste | Cenários do plano de teste passaram |
-| 6 | **Validação** | Quem pediu confere o resultado (produto/negócio) | Aprovado por quem pediu |
-| 7 | **Pronto** | Entregue e validado | — |
+| 1 | **Aguardando** | Demanda registrada e priorizada, esperando alguém pegar; é aqui que ela é refinada (critério de aceitação, solução técnica, estimativa) | Está claro o suficiente para começar sem perguntar **e** alguém assume |
+| 2 | **Em Desenvolvimento** | Alguém está codando (assignee definido) | Código pronto, testado localmente, PR aberto |
+| 3 | **Code Review** | PR aberto aguardando revisão | PR aprovado e mergeado |
+| 4 | **Qualidade** | QA validando em ambiente de teste | Cenários do plano de teste passaram |
+| 5 | **Validação** | Quem pediu confere o resultado (produto/negócio) | Aprovado por quem pediu |
+| 6 | **Pronto** | Entregue e validado | — |
 
 Como montar no Jira: crie um board **Kanban** e mapeie uma coluna por status; se não puder
 criar status novos, use os que existem e registre no mapa qual status representa cada etapa.
-Recomendações: **limite de WIP** em Desenvolvimento e Code Review (ex.: 2 por pessoa), e
-**Refinamento como porta de entrada** — nada entra em Desenvolvimento sem passar por lá.
 
-Times menores podem juntar **Qualidade + Validação**; nunca junte Desenvolvimento com Code
-Review (é onde o gargalo aparece, e juntar esconde o problema).
+Recomendações que fazem o quadro funcionar:
+
+- **Aguardando é a porta de entrada** — nada entra em Em Desenvolvimento sem estar refinado.
+  Card que "entra em dev para descobrir o que fazer" volta como retrabalho.
+- **Limite de WIP** em Em Desenvolvimento e Code Review (ex.: 2 por pessoa). Sem limite, tudo
+  fica "em andamento" e nada termina.
+- Times menores podem juntar **Qualidade + Validação**; nunca junte **Em Desenvolvimento com
+  Code Review** — é onde o gargalo aparece, e juntar as duas esconde o problema.
 
 ---
 
