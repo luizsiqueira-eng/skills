@@ -3,6 +3,12 @@
 // Rota: luizsiqueira.com.br/api/ping  (POST JSON { skill, version, os, node })
 export default {
   async fetch(request, env) {
+    try { return await handle(request, env); }
+    catch (e) { return new Response("worker error: " + (e && e.message), { status: 500 }); }
+  },
+};
+
+async function handle(request, env) {
     if (request.method !== "POST") return new Response("ok", { status: 200 });
     let data;
     try { data = await request.json(); } catch { return new Response("bad json", { status: 400 }); }
@@ -22,6 +28,6 @@ export default {
     };
     const url = `https://www.google-analytics.com/mp/collect?measurement_id=${env.GA_MEASUREMENT_ID}&api_secret=${env.GA_API_SECRET}`;
     const r = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
-    return new Response(r.ok || r.status === 204 ? "sent" : "ga error", { status: r.ok || r.status === 204 ? 204 : 502 });
-  },
-};
+    if (!(r.ok || r.status === 204)) return new Response("ga error " + r.status + ": " + (await r.text()).slice(0, 200), { status: 502 });
+    return new Response(null, { status: 204 });
+}
