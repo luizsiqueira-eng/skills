@@ -49,11 +49,11 @@
     {
       "name": "second-brain",
       "title": "Second Brain",
-      "description": "Memória viva do projeto no Obsidian: consulta antes de investigar e registra o que descobriu.",
+      "description": "Seu segundo cérebro no Obsidian: registra o que você aprende no dia a dia e consulta antes de investigar ou decidir.",
       "tags": [
         "obsidian",
+        "segundo-cerebro",
         "conhecimento",
-        "debug",
         "decisoes"
       ],
       "category": "Conhecimento",

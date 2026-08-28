@@ -1,17 +1,19 @@
 ---
 name: second-brain
-description: "Segundo cérebro do projeto em um vault Obsidian (markdown com wiki-links) versionado junto com o código: CONSULTAR antes de investigar, debugar ou decidir arquitetura (casos passados, problemas conhecidos, gotchas de integração, decisões) e ALIMENTAR ao fechar uma investigação, diagnóstico ou decisão, com data e links. Na primeira execução cria o vault (estrutura, índice, templates) e oferece instalar o Obsidian. Invocar ao iniciar debug/investigação, ao encontrar comportamento estranho já visto, ao fechar um diagnóstico, ao tomar decisão de arquitetura, ou quando pedirem para 'registrar no cérebro', 'anotar isso', 'consultar o cérebro', 'o que já sabemos sobre X'."
+description: "Segundo cérebro do dia a dia em um vault Obsidian (markdown com wiki-links): tudo que você aprende trabalhando — investigações, debugs, decisões, reuniões, gotchas de sistemas e integrações, aprendizados — registrado com data e ligado por links. CONSULTAR antes de investigar, decidir ou responder ('o que já sabemos sobre X?') e ALIMENTAR ao fechar uma investigação, diagnóstico, decisão ou reunião. Na primeira execução cria o vault (estrutura, índice, templates) e oferece instalar o Obsidian. Invocar ao iniciar debug/investigação, ao encontrar comportamento estranho já visto, ao fechar um diagnóstico, ao tomar decisão de arquitetura, ou quando pedirem para 'registrar no cérebro', 'anotar isso', 'consultar o cérebro', 'o que já sabemos sobre X'."
 ---
 
-# Second Brain — memória viva do projeto
+# Second Brain — o que você aprende no dia a dia, sem se perder
 
-Um vault Obsidian dentro do repositório: markdown puro, wiki-links `[[Nome da nota]]`, versionado
-com o código. **O agente lê e escreve os arquivos direto; o Obsidian é só o visualizador** — o
-grafo, a busca e a navegação. Sem Obsidian instalado, a skill funciona igual.
+Um vault Obsidian: markdown puro, wiki-links `[[Nome da nota]]`. Pode viver dentro de um
+repositório (memória do time, versionada com o código) ou numa pasta sua (memória pessoal de
+trabalho) — a skill funciona igual. **O agente lê e escreve os arquivos direto; o Obsidian é só
+o visualizador** — grafo, busca e navegação. Sem Obsidian instalado, nada muda.
 
-A tese: **toda descoberta relevante (fluxo, problema, decisão, gotcha) entra com data**, para que
-qualquer sessão futura — sua, de um colega ou do agente — recupere o contexto em minutos, não em
-horas de re-investigação.
+A tese: **tudo que custou esforço para descobrir entra com data** — uma investigação, um debug,
+uma decisão, o que ficou combinado numa reunião, um comportamento estranho de sistema — para que
+qualquer sessão futura (sua, de um colega ou do agente) recupere o contexto em minutos, não em
+horas de re-investigação. É memória de trabalho, não documentação de projeto.
 
 | Modo | Quando |
 |---|---|
@@ -25,9 +27,10 @@ horas de re-investigação.
 
 # Setup (primeira vez)
 
-1. **Onde fica o vault.** Sugira `./segundo-cerebro/` na raiz do repositório e pergunte. Um
-   repositório = um vault; monorepo ou time com vários repos pode ter o vault num repo próprio
-   e apontar para ele.
+1. **Onde fica o vault.** Pergunte o uso: **do time** (dentro do repositório, versionado —
+   sugira `./segundo-cerebro/`) ou **pessoal** (uma pasta sua, ex.: `~/segundo-cerebro/`,
+   sincronizada como você preferir). Time com vários repos pode ter o vault num repo próprio e
+   apontar para ele.
 2. **Crie a estrutura** copiando os templates desta skill (pasta `templates/`):
 
    ```
@@ -38,10 +41,12 @@ horas de re-investigação.
    ├── Decisões/               ← decisões de arquitetura e produto, com o porquê
    ├── Sistemas/               ← como cada sistema/módulo funciona de verdade
    ├── Integrações/            ← endpoints, gotchas, onde mora a credencial (nunca a credencial)
+   ├── Reuniões/               ← o que ficou combinado, com quem, quando (opcional)
    └── .obsidian/app.json      ← `{}` basta; o Obsidian preenche o resto
    ```
 
-   Pastas são sugestão — pergunte se o time quer outras (ex.: `Runbooks/`, `Reuniões/`).
+   Pastas são sugestão — pergunte que outras fazem sentido (`Runbooks/`, `Aprendizados/`,
+   `Pessoas/` para 1:1s, `Planejamento/`).
 3. **Grave `.claude/second-brain.md`** e versione:
 
    ```markdown
@@ -97,8 +102,9 @@ Registrar **no final** de toda investigação, debug relevante ou decisão — n
 
 ## Critério de entrada
 
-Só entra o que ajuda o projeto no futuro: investigação ligada a card, cliente, incidente ou
-decisão. **Consulta rápida e curiosidade não entram.** Se a curiosidade revelou um comportamento
+Só entra o que ajuda no futuro: investigação ligada a card, cliente, incidente ou decisão;
+acordo de reunião; aprendizado que você vai querer reencontrar. **Consulta rápida e curiosidade
+não entram.** Se a curiosidade revelou um comportamento
 genérico e reutilizável do sistema, registre só o comportamento na nota do tema, sem o caso.
 Na dúvida, **pergunte** antes de criar a nota.
 
@@ -111,6 +117,8 @@ Na dúvida, **pergunte** antes de criar a nota.
 | Decisão de arquitetura/produto tomada | nota nova em `Decisões/AAAA-MM-DD <decisão>.md` com contexto, opções e o porquê |
 | Detalhe novo de integração (endpoint, limite, gotcha, onde mora a credencial) | update na nota em `Integrações/` |
 | Entendimento novo de como um sistema funciona | update em `Sistemas/` |
+| Reunião com acordo, prazo ou decisão | nota em `Reuniões/AAAA-MM-DD <assunto>.md`: quem, o que ficou combinado, próximos passos |
+| Aprendizado reutilizável (técnica, comando, atalho, lição) | nota em `Aprendizados/` ou update na nota do tema |
 | Nota nova de qualquer tipo | **+ uma linha em `00 Índice.md`** |
 
 Templates prontos em `templates/` (caso, problema, decisão, sistema/integração).
@@ -154,8 +162,8 @@ Templates prontos em `templates/` (caso, problema, decisão, sistema/integraçã
 
 | O que | Aqui | No seu time |
 |---|---|---|
-| Local do vault | `./segundo-cerebro/` | qualquer caminho em `.claude/second-brain.md` |
-| Pastas | Casos, Problemas conhecidos, Decisões, Sistemas, Integrações | acrescente (Runbooks, Reuniões, Pessoas…) e registre no índice |
+| Local do vault | `./segundo-cerebro/` (time) ou `~/segundo-cerebro/` (pessoal) | qualquer caminho em `.claude/second-brain.md` |
+| Pastas | Casos, Problemas conhecidos, Decisões, Sistemas, Integrações, Reuniões | acrescente (Runbooks, Aprendizados, Pessoas…) e registre no índice |
 | Idioma | pt-BR | o do time |
 | Fontes de verdade externas | README, docs/, ADRs | wiki, Confluence, Notion — o vault aponta |
 | Visualizador | Obsidian | qualquer editor de markdown; Logseq e Foam leem wiki-links também |
