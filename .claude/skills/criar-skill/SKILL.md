@@ -1,6 +1,6 @@
 ---
 name: criar-skill
-description: "Cria uma skill nova neste repositório e a publica: pasta em skills/, SKILL.md com frontmatter, entrada no skills.json (catálogo que o site lê), bump de versão e release no GitHub que dispara o publish no npm. Invocar quando o Luiz pedir para criar/adicionar uma skill nova, transformar um fluxo dele em skill, ou editar/renomear/remover uma skill existente deste catálogo."
+description: "Cria uma skill nova neste repositório e a publica: pasta em skills/, SKILL.md com frontmatter, entrada no skills.json (catálogo que o site lê), bump de versão e release no GitHub que dispara o publish no npm. Invocar quando pedirem para criar/adicionar uma skill nova, transformar um fluxo dele em skill, ou editar/renomear/remover uma skill existente deste catálogo."
 ---
 
 # Criar uma skill nova
@@ -19,8 +19,8 @@ Por isso **catálogo e pacote têm que subir juntos** — ver a etapa 5.
 
 Skill boa é fluxo que já existe e funciona. Antes de escrever:
 
-- Pergunte ao Luiz como ele faz hoje, passo a passo, e onde costuma dar errado.
-- Se o fluxo existir em alguma skill interna dele (`~/Projetos/JCPM/.claude/skills/`, `~/.claude/skills/`), **leia primeiro** e use como matéria-prima.
+- Pergunte ao autor como ele faz hoje, passo a passo, e onde costuma dar errado.
+- Se o fluxo já existir em alguma skill interna do ambiente do autor (skills privadas de projeto ou `~/.claude/skills/`), **leia primeiro** e use como matéria-prima — e neutralize tudo dela.
 - Se ele mandar uma palestra, um PDF ou um print, extraia o fluxo dali.
 - Não pergunte o que der para descobrir lendo o repositório.
 
@@ -30,8 +30,8 @@ Nada de empresa, cliente ou instância dele pode ir para o público:
 
 | Sai | Entra |
 |---|---|
-| `NE-1234`, nome do projeto do tracker | `ABC-123` e "o identificador do card no seu tracker" |
-| `customfield_10169`, transição id `111`, board `150` | "o campo de PRs da sua instância", "a transição para o status equivalente" |
+| Prefixo real do card do tracker (`XYZ-1234`), nome do projeto | `ABC-123` e "o identificador do card no seu tracker" |
+| Ids reais de campo customizado, de transição, de board | "o campo de PRs da sua instância", "a transição para o status equivalente" |
 | Webhook do Discord, nome de canal, role id | "o canal do time (Slack, Discord, Teams…)" |
 | Nome da empresa, do time, de colegas, de repos internos | omitir |
 | "o fluxo que uso com meu time" | "fluxo baseado em práticas de mercado (Git Flow, …)" |
@@ -39,10 +39,12 @@ Nada de empresa, cliente ou instância dele pode ir para o público:
 Antes de publicar, rode a checagem:
 
 ```bash
-grep -rniE "jcpm|nejcpm|NE-[0-9]|nedigital|customfield|discord\.com/api|meus times" skills/
+# nome do autor, empresa, produtos, sistemas, cidades, colegas, ids de tracker — ajuste a lista ao seu caso
+grep -rniE "<nome-da-empresa>|<sigla>|<prefixo-do-tracker>-[0-9]|<dominio-da-empresa>|customfield_[0-9]|<nomes de sistemas internos>|<nomes de colegas>|meus times" skills/ README.md skills.json bin/
 ```
 
-Só pode voltar vazio (menções genéricas a Discord como *exemplo de canal* são aceitáveis).
+Só pode voltar vazio. A lista é sua e cresce: toda vez que um termo interno escapar, entra aqui.
+Menções genéricas a ferramentas de mercado (Jira, Trello, Slack, Discord) como *exemplo* são aceitáveis.
 
 ## 3. Escrever a skill
 
@@ -133,7 +135,7 @@ npm view @luizsiqueira/skills version   # confirmar
 
 **Ordem importa:** o site lê o `skills.json` do `main`, então logo que você faz o push o
 card aparece com o comando de instalação — e ele só funciona depois da release publicar no
-npm. Faça push e release na mesma sessão; se algo travar, avise o Luiz que o card está no ar
+npm. Faça push e release na mesma sessão; se algo travar, avise que o card está no ar
 antes do pacote.
 
 Nunca rode `npm publish` na mão: a conta exige 2FA interativo e o pipeline existe para isso.
@@ -157,7 +159,7 @@ Nunca rode `npm publish` na mão: a conta exige 2FA interativo e o pipeline exis
 
 ## Checklist rápido
 
-- [ ] Fluxo levantado com o Luiz (ou extraído de material real), não inventado
+- [ ] Fluxo levantado com o autor (ou extraído de material real), não inventado
 - [ ] Grep de neutralização limpo
 - [ ] Pasta `skills/<nome-en-kebab>/SKILL.md` com `name` igual à pasta
 - [ ] `description` do frontmatter diz o que faz **e** quando invocar
@@ -167,4 +169,4 @@ Nunca rode `npm publish` na mão: a conta exige 2FA interativo e o pipeline exis
 - [ ] `node bin/cli.mjs list` e `add --all` passando
 - [ ] Push + `gh release create` na mesma sessão
 - [ ] `npx ... add <nome>` testado de pasta limpa
-- [ ] Luiz revisou o SKILL.md antes da release (é o processo dele que fica público)
+- [ ] Autor revisou o SKILL.md antes da release (é o processo dele que fica público)

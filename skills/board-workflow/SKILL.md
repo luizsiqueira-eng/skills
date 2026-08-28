@@ -140,7 +140,7 @@ Atualize o arquivo — ele é a fonte da verdade, não a memória da conversa.
 # Quadro padrão sugerido (para quem não tem fluxo)
 
 Seis colunas, do que está esperando ao que está pronto. Cada uma com critério claro de
-entrada e saída — coluna sem critério vira estacionamento de card.
+entrada e saída — coluna sem critério vira depósito de card parado.
 
 | # | Coluna | Significa | Sai quando |
 |---|---|---|---|
