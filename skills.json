@@ -4,7 +4,7 @@
   "skills": [
     {
       "name": "git-flow-delivery",
-      "title": "Git Flow Delivery — do card ao deploy",
+      "title": "Git Flow Delivery",
       "description": "Branch, commit, PR, release e hotfix seguindo o Git Flow.",
       "tags": [
         "git-flow",
@@ -19,7 +19,7 @@
     },
     {
       "name": "board-workflow",
-      "title": "Board Workflow — Jira, Trello e outros",
+      "title": "Board Workflow",
       "description": "Cria, move e consulta cards no Jira ou Trello seguindo o fluxo do seu time.",
       "tags": [
         "jira",

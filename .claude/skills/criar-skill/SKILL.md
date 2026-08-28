@@ -87,7 +87,7 @@ Uma entrada por skill — é isso que vira o card no site:
 ```json
 {
   "name": "git-flow-delivery",
-  "title": "Git Flow Delivery — do card ao deploy",
+  "title": "Git Flow Delivery",
   "description": "Branch, commit, PR, release e hotfix seguindo o Git Flow.",
   "tags": ["git-flow", "code-review", "release"],
   "category": "Engenharia",
@@ -97,7 +97,6 @@ Uma entrada por skill — é isso que vira o card no site:
 ```
 
 - `name` **igual** ao nome da pasta (o CI falha se divergir).
-- `title`: legível, em português — é o cabeçalho do card.
 - `description`: **uma frase, só o que a skill faz** — sem explicar como funciona, sem
   listar etapas ("entrevista o time…", "detecta a stack…"). Exemplo bom: "Cria, move e
   consulta cards no Jira ou Trello seguindo o fluxo do seu time." Não repita a description do
