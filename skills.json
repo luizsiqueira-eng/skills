@@ -5,7 +5,7 @@
     {
       "name": "git-flow-delivery",
       "title": "Git Flow Delivery — do card ao deploy",
-      "description": "Branch, commit, PR, release e hotfix seguindo o Git Flow, com integração opcional ao Jira.",
+      "description": "Branch, commit, PR, release e hotfix seguindo o Git Flow.",
       "tags": [
         "git-flow",
         "code-review",
@@ -20,7 +20,7 @@
     {
       "name": "board-workflow",
       "title": "Board Workflow — Jira, Trello e outros",
-      "description": "Entrevista o time na primeira vez para mapear quadro, colunas, campos e o momento de cada um; depois cria, move e consulta cards seguindo esse mapa.",
+      "description": "Cria, move e consulta cards no Jira ou Trello seguindo o fluxo do seu time.",
       "tags": [
         "jira",
         "trello",
@@ -35,7 +35,7 @@
     {
       "name": "security-review",
       "title": "Web Security Review",
-      "description": "Detecta a stack, roda os scanners disponíveis, procura padrões perigosos (injection, XSS, IDOR, secrets, SSRF, output de LLM sem validação), classifica por severidade e corrige com confirmação.",
+      "description": "Aponta e corrige vulnerabilidades em projetos web e apps com IA.",
       "tags": [
         "web",
         "seguranca",
