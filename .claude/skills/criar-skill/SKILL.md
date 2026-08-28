@@ -110,7 +110,9 @@ Uma entrada por skill — é isso que vira o card no site:
 - `featured`: no máximo uma skill por vez.
 
 Existe uma cópia do catálogo no site (`~/Projetos/nlake/luiz-siqueira/skills/skills.json`)
-usada só como fallback — atualize as duas para ficarem iguais.
+usada como fallback **e como fonte do conteúdo estático/SEO** — atualize as duas para ficarem
+iguais e, no repositório do site, rode `node skills/build.mjs` (regenera cards estáticos,
+JSON-LD, FAQ e `llms.txt`) antes de commitar.
 
 ## 5. Publicar
 
@@ -164,7 +166,7 @@ Nunca rode `npm publish` na mão: a conta exige 2FA interativo e o pipeline exis
 - [ ] Pasta `skills/<nome-en-kebab>/SKILL.md` com `name` igual à pasta
 - [ ] `description` do frontmatter diz o que faz **e** quando invocar
 - [ ] Corpo com passos numerados, comandos, checklist e "Adaptando ao seu time"
-- [ ] Entrada no `skills.json` (repo **e** cópia do site), com `added` de hoje
+- [ ] Entrada no `skills.json` (repo **e** cópia do site), com `added` de hoje; `node skills/build.mjs` rodado no site
 - [ ] Versão do `package.json` ajustada (nova skill = minor)
 - [ ] `node bin/cli.mjs list` e `add --all` passando
 - [ ] Push + `gh release create` na mesma sessão
