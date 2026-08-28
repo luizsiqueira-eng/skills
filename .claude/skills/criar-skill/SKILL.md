@@ -98,8 +98,12 @@ Uma entrada por skill — é isso que vira o card no site:
 
 - `name` **igual** ao nome da pasta (o CI falha se divergir).
 - `title`: legível, em português — é o cabeçalho do card.
-- `description`: **uma frase curta**. Não repita a description do frontmatter (ela é longa
-  e cheia de termos técnicos, boa para o agente e ruim para o card).
+- `description`: **uma frase, só o que a skill faz** — sem explicar como funciona, sem
+  listar etapas ("entrevista o time…", "detecta a stack…"). Exemplo bom: "Cria, move e
+  consulta cards no Jira ou Trello seguindo o fluxo do seu time." Não repita a description do
+  frontmatter (ela é longa e cheia de termos técnicos, boa para o agente e ruim para o card).
+- `title`: curto, sem subtítulo explicativo depois do travessão ("Web Security Review", não
+  "Web Security Review — Laravel, Node e apps com IA").
 - `tags`: 3–5, minúsculas, kebab-case; viram os filtros da página.
 - `added`: data de hoje em `YYYY-MM-DD` (ordena a home, mais recente primeiro).
 - `featured`: no máximo uma skill por vez.
