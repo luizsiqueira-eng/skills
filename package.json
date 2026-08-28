@@ -1,6 +1,6 @@
 {
   "name": "@luizsiqueira/skills",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Skills para agentes de IA (Claude Code) — fluxos de engenharia baseados em práticas de mercado (Git Flow, code review, releases), sem amarras a empresa ou ferramenta.",
   "type": "module",
   "bin": {
