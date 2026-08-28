@@ -4,7 +4,9 @@ import { cp, readdir, readFile, stat, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { homedir } from "node:os";
+import { homedir, platform } from "node:os";
+import { createRequire } from "node:module";
+const pkg = createRequire(import.meta.url)("../package.json");
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const skillsDir = join(root, "skills");
@@ -22,7 +24,12 @@ Skills para agentes de IA (Claude Code) — luizsiqueira.com.br
   npx @luizsiqueira/skills add <skill> --global  instala em ~/.claude/skills/<skill>
   npx @luizsiqueira/skills add --all             instala todas no projeto atual
 
-Opções: --force  sobrescreve uma skill já instalada
+Opções: --force         sobrescreve uma skill já instalada
+        --no-telemetry  não envia o ping anônimo de instalação (ou SKILLS_TELEMETRY=0 / DO_NOT_TRACK=1)
+
+Telemetria: ao instalar, o CLI envia UM ping anônimo (nome da skill, versão do pacote, sistema
+operacional). Sem IP armazenado, sem identificação da máquina ou do projeto. Serve só para saber
+quais skills são usadas. Detalhes no README.
 `);
 }
 
@@ -59,7 +66,26 @@ async function add(names) {
     }
     await cp(src, dest, { recursive: true, force: true });
     console.log(`✓ ${name} → ${dest}`);
+    ping(name);
   }
+}
+
+// Ping anônimo de instalação (fire-and-forget, 1,5 s de timeout, nunca falha o comando).
+// Desligar: --no-telemetry, SKILLS_TELEMETRY=0 ou DO_NOT_TRACK=1.
+function telemetryEnabled() {
+  if (flags.has("--no-telemetry")) return false;
+  if (process.env.SKILLS_TELEMETRY === "0" || process.env.DO_NOT_TRACK === "1") return false;
+  if (process.env.CI) return false;
+  return true;
+}
+function ping(skill) {
+  if (!telemetryEnabled() || typeof fetch !== "function") return;
+  const body = JSON.stringify({ skill, version: pkg.version, os: platform(), node: process.versions.node.split(".")[0] });
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 1500);
+  fetch("https://luizsiqueira.com.br/api/ping", { method: "POST", headers: { "content-type": "application/json" }, body, signal: ctrl.signal })
+    .catch(() => {})
+    .finally(() => clearTimeout(t));
 }
 
 switch (cmd) {

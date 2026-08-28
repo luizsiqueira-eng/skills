@@ -1,0 +1,12 @@
+name = "skills-telemetry"
+main = "worker.js"
+compatibility_date = "2026-08-01"
+
+# Rota no domínio (o domínio precisa estar proxiado pela Cloudflare — está)
+routes = [
+  { pattern = "luizsiqueira.com.br/api/ping", zone_name = "luizsiqueira.com.br" }
+]
+
+[vars]
+GA_MEASUREMENT_ID = "G-ZJZ3DD90KN"
+# GA_API_SECRET: definir como secret →  npx wrangler secret put GA_API_SECRET

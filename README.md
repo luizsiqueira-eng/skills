@@ -36,6 +36,16 @@ Cada skill termina com uma seção **"Adaptando ao seu time"**: os poucos pontos
 de um time para outro (prefixo do card, nome das branches, status do quadro, canal).
 Troque esses e o resto do fluxo se mantém.
 
+## Telemetria
+
+Ao instalar uma skill, o CLI envia **um ping anônimo**: nome da skill, versão do pacote e sistema
+operacional. Não envia IP (não é armazenado), nome da máquina, usuário, caminho do projeto ou
+qualquer conteúdo. O objetivo é único: saber quais skills são usadas para priorizar manutenção.
+
+Para desligar: `--no-telemetry`, ou `SKILLS_TELEMETRY=0`, ou `DO_NOT_TRACK=1`. Em CI é
+desligada automaticamente. O código do ping está em `bin/cli.mjs` e o receptor em
+`telemetry-worker/`.
+
 ## Contribuindo
 
 Abra uma issue com o caso que a skill não cobre, ou um PR seguindo — claro — o
