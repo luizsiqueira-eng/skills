@@ -1,4 +1,5 @@
 name = "skills-telemetry"
+account_id = "87d2b036d61bf821e570a0dbc69ee03f"
 main = "worker.js"
 compatibility_date = "2026-08-01"
 
