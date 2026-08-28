@@ -19,7 +19,7 @@ horas de re-investigação. É memória de trabalho, não documentação de proj
 |---|---|
 | **Setup** | não existe `.claude/second-brain.md` |
 | **Consultar** | antes de investigar, debugar ou decidir |
-| **Alimentar** | ao fechar investigação, diagnóstico ou decisão |
+| **Alimentar** | ao fechar investigação, diagnóstico, decisão ou reunião |
 
 **Primeira coisa, sempre:** leia `.claude/second-brain.md`. Ele diz onde o vault está.
 
@@ -53,7 +53,7 @@ horas de re-investigação. É memória de trabalho, não documentação de proj
    # Second brain
    - Vault: ./segundo-cerebro
    - Idioma das notas: pt-BR
-   - Pastas: Casos, Problemas conhecidos, Decisões, Sistemas, Integrações
+   - Pastas: Casos, Problemas conhecidos, Decisões, Sistemas, Integrações, Reuniões
    - Fontes de verdade fora do vault: README e docs/ dos repos, ADRs em docs/adr/ (o vault aponta, não copia)
    ```
 4. **Obsidian.** Verifique se está instalado (`ls /Applications/Obsidian.app`, `which obsidian`,
@@ -70,14 +70,14 @@ horas de re-investigação. É memória de trabalho, não documentação de proj
    `obsidian://open?path=<caminho absoluto, URL-encoded>`. Na primeira abertura o Obsidian
    pede para confiar no vault — normal.
 5. **Primeira nota útil na hora.** Um vault vazio morre. Pergunte: "qual foi a última coisa que
-   custou horas para descobrir neste projeto?" e registre como o primeiro caso ou problema
+   custou horas para descobrir no seu trabalho?" e registre como o primeiro caso ou problema
    conhecido. Depois adicione a linha no índice.
 
 ---
 
 # Consultar (antes de resolver)
 
-Antes de investigar qualquer comportamento, integração ou decisão de arquitetura:
+Antes de investigar um comportamento, decidir algo ou responder "o que já sabemos sobre X":
 
 1. Ler `00 Índice.md` e abrir as notas do tema.
 2. Checar **`Problemas conhecidos/`** — o sintoma pode já ter diagnóstico pronto.
@@ -98,7 +98,7 @@ O cérebro complementa a documentação, não a substitui: README e `docs/` dize
 
 # Alimentar (manter vivo)
 
-Registrar **no final** de toda investigação, debug relevante ou decisão — não durante.
+Registrar **no final** de toda investigação, debug relevante, decisão ou reunião — não durante.
 
 ## Critério de entrada
 
@@ -121,7 +121,7 @@ Na dúvida, **pergunte** antes de criar a nota.
 | Aprendizado reutilizável (técnica, comando, atalho, lição) | nota em `Aprendizados/` ou update na nota do tema |
 | Nota nova de qualquer tipo | **+ uma linha em `00 Índice.md`** |
 
-Templates prontos em `templates/` (caso, problema, decisão, sistema/integração).
+Templates prontos em `templates/` (caso, problema, decisão, sistema/integração, reunião).
 
 ## Regras de escrita
 
